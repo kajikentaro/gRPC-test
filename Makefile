@@ -19,7 +19,8 @@ gen_grpc_front:
 	cd frontend && protoc \
 		-I=../grpc \
 		../grpc/*.proto \
-    --grpc-web_out=import_style=typescript,mode=grpcwebtext:$(OUT_DIR)
+    --grpc-web_out=import_style=typescript,mode=grpcwebtext:$(OUT_DIR) \
+		--js_out=import_style=commonjs,binary:$(OUT_DIR)
 
 gen_grpc_back:
 	cd grpc && protoc \

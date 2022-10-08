@@ -1,13 +1,22 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import { GreeterClient } from "../grpc_out/GrpcServiceClientPb";
+import { HelloRequest } from "../grpc_out/grpc_pb";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
   const handleClick = async () => {
-    const res = await fetch("/api/hello");
-    const json = await res.json();
-    console.log(json);
+    const client = new GreeterClient("http://localhost:8080")
+    const query = new HelloRequest()
+    query.setName("Sato Taro")
+    client.sayHello(query,null, (err, response)=>{
+      if(err){
+        console.error(err)
+      }else{
+        console.log(response)
+      }
+    });
   };
   return (
     <div className={styles.container}>

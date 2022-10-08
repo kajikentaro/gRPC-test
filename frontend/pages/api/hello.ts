@@ -1,8 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { grpc } from "@improbable-eng/grpc-web";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { HelloReply, HelloRequest } from "../../grpc_out/grpc_pb";
-import { Greeter } from "../../grpc_out/grpc_pb_service";
+import { GreeterClient } from "../../grpc_out/GrpcServiceClientPb";
+import { HelloRequest } from "../../grpc_out/grpc_pb";
 
 type Data = {
   name: string;
@@ -12,26 +11,14 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const queryBooksRequest = new HelloRequest();
-  queryBooksRequest.setName("Geor");
-  grpc.invoke(Greeter.SayHello, {
-    request: queryBooksRequest,
-    host: "https://example.com",
-    onMessage: (message: HelloReply) => {
-      console.log("got book: ", message.toObject());
-    },
-    onEnd: (
-      code: grpc.Code,
-      msg: string | undefined,
-      trailers: grpc.Metadata
-    ) => {
-      if (code == grpc.Code.OK) {
-        console.log("all ok");
-      } else {
-        console.log("hit an error", code, msg, trailers);
-      }
-    },
+  const client = new GreeterClient("localhost:8080")
+  const query = new HelloRequest()
+  query.setName("Sato Taro")
+  client.sayHello(query,null, (err, response)=>{
+    if(err){
+      res.status(300).json({name: "error"})
+    }else{
+      res.status(200).json({name: "ok"})
+    }
   });
-
-  res.status(200).json({ name: "John Doe" });
 }
