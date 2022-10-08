@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-option go_package = "google.golang.org/grpc/examples/helloworld/helloworld";
+option go_package = "github.com/kajikentaro/gRPC-test/grpc";
 package helloworld;
 
 // The greeting service definition.
