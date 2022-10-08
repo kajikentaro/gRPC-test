@@ -1,0 +1,37 @@
+version: '3.2'
+
+services:
+  dev_front:
+    image: node:18-alpine
+    container_name: grpc_dev_front
+    volumes:
+      - type: volume
+        source: share_volume_dev
+        target: /root/app
+    tty: true
+    ports:
+      - "3000:3000"
+
+  dev_back:
+    image: golang:1.19.2-alpine
+    hostname: dev_back
+    container_name: grpc_dev_back
+    volumes:
+      - type: volume
+        source: share_volume_dev
+        target: /root/app
+    tty: true
+    ports:
+      - "50051:50051"
+
+  envoy:
+    build:
+      context: ./envoy
+    container_name: grpc_envoy
+    image: grpcweb/envoy
+    ports:
+      - "8080:8080"
+      - "9901:9901"
+
+volumes:
+  share_volume_dev:

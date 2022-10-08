@@ -29,3 +29,16 @@ gen_grpc_back:
 		--go_opt=paths=source_relative \
 		--go-grpc_out=. \
 		--go-grpc_opt=paths=source_relative
+
+start_dev_init:
+	docker exec -it grpc_dev_front sh -c 'apk add git openssh-client'
+	docker exec -it grpc_dev_front sh -c 'cd /root/ && git clone https://github.com/kajikentaro/gRPC-test /root/app'
+
+start_dev_front:
+	docker exec -itd grpc_dev_front sh -c 'cd /root/app/frontend && yarn && yarn dev'
+
+start_dev_back:
+	docker exec -itd grpc_dev_back sh -c 'cd /root/app/backend && go run main.go'
+
+danger_rm:
+	docker compose down --rmi all --volumes --remove-orphans
