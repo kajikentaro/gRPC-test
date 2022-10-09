@@ -33,5 +33,23 @@ services:
       - "8080:8080"
       - "9901:9901"
 
+  db:
+    container_name: grpc_db
+    build:
+      context: ./db
+    tty: true
+    volumes:
+      - type: bind
+        source: ./db/DATA
+        target: /var/lib/mysql
+    healthcheck:
+      test: "mysql --password=${MYSQL_ROOT_PASSWORD} --execute 'show databases;'"
+      interval: 3s
+      timeout: 30s
+      retries: 10
+      start_period: 0s
+    env_file:
+      - .env
+
 volumes:
   share_volume_dev:
