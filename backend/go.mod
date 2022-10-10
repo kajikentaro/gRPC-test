@@ -3,6 +3,8 @@ module github.com/kajikentaro/gRPC-test/backend
 go 1.19
 
 require (
+	github.com/go-sql-driver/mysql v1.6.0
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/kajikentaro/gRPC-test v0.0.0-20221008035759-8a139b579d48
 	google.golang.org/grpc v1.50.0
 )

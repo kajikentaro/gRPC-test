@@ -1,22 +1,3 @@
-/*
- *
- * Copyright 2015 gRPC authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
-// Package main implements a server for Greeter service.
 package main
 
 import (
@@ -25,11 +6,13 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 
-	"google.golang.org/grpc"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	pb "github.com/kajikentaro/gRPC-test/grpc"
+	"google.golang.org/grpc"
 )
-
 
 var (
 	port = flag.Int("port", 50051, "The server port")
@@ -46,7 +29,35 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
 }
 
+func getEnv(key string, defaultValue string) string {
+	if val, ok := os.LookupEnv(key); ok {
+		return val
+	}
+	return defaultValue
+}
+
+func connectDB() *sqlx.DB {
+	dataSource := fmt.Sprintf("%s:%s@(%s)/%s",
+		getEnv("MYAPP_MYSQL_USER", ""),
+		getEnv("MYSQL_ROOT_PASSWORD", ""),
+		getEnv("MYAPP_MYSQL_HOSTNAME", ""),
+		getEnv("MYAPP_MYSQL_DB_NAME", ""),
+	)
+	db, err := sqlx.Connect("mysql", dataSource)
+	if err != nil {
+		log.Fatalln(err)
+		os.Exit(1)
+	}
+
+	db.Exec("CREATE TABLE user(id int AUTO INCREMENT PRIMARY KEY, name TEXT, email TEXT)")
+	db.Exec("CREATE TABLE data(id int AUTO INCREMENT PRIMARY KEY, user_id int, value TEXT)")
+	return db
+}
+
 func main() {
+	db := connectDB()
+	fmt.Println(db)
+
 	flag.Parse()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 	if err != nil {
