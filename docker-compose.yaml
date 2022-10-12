@@ -11,6 +11,8 @@ services:
     tty: true
     ports:
       - "3000:3000"
+    env_file:
+      - .env
 
   dev_back:
     image: golang:1.19.2-alpine
@@ -23,6 +25,8 @@ services:
     tty: true
     ports:
       - "50051:50051"
+    env_file:
+      - .env
 
   envoy:
     build:
@@ -35,6 +39,7 @@ services:
 
   db:
     container_name: grpc_db
+    hostname: grpc_db
     build:
       context: ./db
     tty: true
