@@ -18,126 +18,158 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// GreeterClient is the client API for Greeter service.
+// DBWriterClient is the client API for DBWriter service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type GreeterClient interface {
-	// Sends a greeting
-	SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
-	// Sends another greeting
-	SayHelloAgain(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+type DBWriterClient interface {
+	CreateNewUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
+	WriteDB(ctx context.Context, in *Data, opts ...grpc.CallOption) (*Data, error)
+	ReadDB(ctx context.Context, in *User, opts ...grpc.CallOption) (*DataList, error)
 }
 
-type greeterClient struct {
+type dBWriterClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewGreeterClient(cc grpc.ClientConnInterface) GreeterClient {
-	return &greeterClient{cc}
+func NewDBWriterClient(cc grpc.ClientConnInterface) DBWriterClient {
+	return &dBWriterClient{cc}
 }
 
-func (c *greeterClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
-	out := new(HelloReply)
-	err := c.cc.Invoke(ctx, "/helloworld.Greeter/SayHello", in, out, opts...)
+func (c *dBWriterClient) CreateNewUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, "/gRPC_test.DBWriter/CreateNewUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *greeterClient) SayHelloAgain(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
-	out := new(HelloReply)
-	err := c.cc.Invoke(ctx, "/helloworld.Greeter/SayHelloAgain", in, out, opts...)
+func (c *dBWriterClient) WriteDB(ctx context.Context, in *Data, opts ...grpc.CallOption) (*Data, error) {
+	out := new(Data)
+	err := c.cc.Invoke(ctx, "/gRPC_test.DBWriter/WriteDB", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// GreeterServer is the server API for Greeter service.
-// All implementations must embed UnimplementedGreeterServer
+func (c *dBWriterClient) ReadDB(ctx context.Context, in *User, opts ...grpc.CallOption) (*DataList, error) {
+	out := new(DataList)
+	err := c.cc.Invoke(ctx, "/gRPC_test.DBWriter/ReadDB", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// DBWriterServer is the server API for DBWriter service.
+// All implementations must embed UnimplementedDBWriterServer
 // for forward compatibility
-type GreeterServer interface {
-	// Sends a greeting
-	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
-	// Sends another greeting
-	SayHelloAgain(context.Context, *HelloRequest) (*HelloReply, error)
-	mustEmbedUnimplementedGreeterServer()
+type DBWriterServer interface {
+	CreateNewUser(context.Context, *User) (*User, error)
+	WriteDB(context.Context, *Data) (*Data, error)
+	ReadDB(context.Context, *User) (*DataList, error)
+	mustEmbedUnimplementedDBWriterServer()
 }
 
-// UnimplementedGreeterServer must be embedded to have forward compatible implementations.
-type UnimplementedGreeterServer struct {
+// UnimplementedDBWriterServer must be embedded to have forward compatible implementations.
+type UnimplementedDBWriterServer struct {
 }
 
-func (UnimplementedGreeterServer) SayHello(context.Context, *HelloRequest) (*HelloReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
+func (UnimplementedDBWriterServer) CreateNewUser(context.Context, *User) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNewUser not implemented")
 }
-func (UnimplementedGreeterServer) SayHelloAgain(context.Context, *HelloRequest) (*HelloReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SayHelloAgain not implemented")
+func (UnimplementedDBWriterServer) WriteDB(context.Context, *Data) (*Data, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WriteDB not implemented")
 }
-func (UnimplementedGreeterServer) mustEmbedUnimplementedGreeterServer() {}
+func (UnimplementedDBWriterServer) ReadDB(context.Context, *User) (*DataList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadDB not implemented")
+}
+func (UnimplementedDBWriterServer) mustEmbedUnimplementedDBWriterServer() {}
 
-// UnsafeGreeterServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to GreeterServer will
+// UnsafeDBWriterServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to DBWriterServer will
 // result in compilation errors.
-type UnsafeGreeterServer interface {
-	mustEmbedUnimplementedGreeterServer()
+type UnsafeDBWriterServer interface {
+	mustEmbedUnimplementedDBWriterServer()
 }
 
-func RegisterGreeterServer(s grpc.ServiceRegistrar, srv GreeterServer) {
-	s.RegisterService(&Greeter_ServiceDesc, srv)
+func RegisterDBWriterServer(s grpc.ServiceRegistrar, srv DBWriterServer) {
+	s.RegisterService(&DBWriter_ServiceDesc, srv)
 }
 
-func _Greeter_SayHello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
+func _DBWriter_CreateNewUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GreeterServer).SayHello(ctx, in)
+		return srv.(DBWriterServer).CreateNewUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/helloworld.Greeter/SayHello",
+		FullMethod: "/gRPC_test.DBWriter/CreateNewUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GreeterServer).SayHello(ctx, req.(*HelloRequest))
+		return srv.(DBWriterServer).CreateNewUser(ctx, req.(*User))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Greeter_SayHelloAgain_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
+func _DBWriter_WriteDB_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Data)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GreeterServer).SayHelloAgain(ctx, in)
+		return srv.(DBWriterServer).WriteDB(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/helloworld.Greeter/SayHelloAgain",
+		FullMethod: "/gRPC_test.DBWriter/WriteDB",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GreeterServer).SayHelloAgain(ctx, req.(*HelloRequest))
+		return srv.(DBWriterServer).WriteDB(ctx, req.(*Data))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Greeter_ServiceDesc is the grpc.ServiceDesc for Greeter service.
+func _DBWriter_ReadDB_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DBWriterServer).ReadDB(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gRPC_test.DBWriter/ReadDB",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DBWriterServer).ReadDB(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// DBWriter_ServiceDesc is the grpc.ServiceDesc for DBWriter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Greeter_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "helloworld.Greeter",
-	HandlerType: (*GreeterServer)(nil),
+var DBWriter_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "gRPC_test.DBWriter",
+	HandlerType: (*DBWriterServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SayHello",
-			Handler:    _Greeter_SayHello_Handler,
+			MethodName: "CreateNewUser",
+			Handler:    _DBWriter_CreateNewUser_Handler,
 		},
 		{
-			MethodName: "SayHelloAgain",
-			Handler:    _Greeter_SayHelloAgain_Handler,
+			MethodName: "WriteDB",
+			Handler:    _DBWriter_WriteDB_Handler,
+		},
+		{
+			MethodName: "ReadDB",
+			Handler:    _DBWriter_ReadDB_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
