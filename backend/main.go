@@ -18,15 +18,23 @@ var (
 	port = flag.Int("port", 50051, "The server port")
 )
 
-// server is used to implement helloworld.GreeterServer.
 type server struct {
-	pb.UnimplementedGreeterServer
+	pb.UnimplementedDBWriterServer
 }
 
-// SayHello implements helloworld.GreeterServer
-func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	log.Printf("Received: %v", in.GetName())
-	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
+type User struct {
+	id    int    `db:"id"`
+	name  string `db:"name"`
+	email int    `db:"email"`
+}
+
+func (s *server) CreateNewUser(ctx context.Context, in *pb.User) (*pb.User, error) {
+	res, _ := db.NamedExec("INSERT INTO user (name, email) VALUES(:name, :email)", in)
+	userId, _ := res.LastInsertId()
+	newUser := *in
+	newUser.Id = userId
+	fmt.Println(newUser)
+	return &newUser, nil
 }
 
 func getEnv(key string, defaultValue string) string {
@@ -49,13 +57,15 @@ func connectDB() *sqlx.DB {
 		os.Exit(1)
 	}
 
-	db.Exec("CREATE TABLE user(id int AUTO INCREMENT PRIMARY KEY, name TEXT, email TEXT)")
-	db.Exec("CREATE TABLE data(id int AUTO INCREMENT PRIMARY KEY, user_id int, value TEXT)")
+	db.Exec("CREATE TABLE user(id int AUTO_INCREMENT PRIMARY KEY, name TEXT, email TEXT)")
+	db.Exec("CREATE TABLE data(id int AUTO_INCREMENT PRIMARY KEY, user_id int, value TEXT)")
 	return db
 }
 
+var db *sqlx.DB
+
 func main() {
-	db := connectDB()
+	db = connectDB()
 	fmt.Println(db)
 
 	flag.Parse()
@@ -64,7 +74,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterGreeterServer(s, &server{})
+	pb.RegisterDBWriterServer(s, &server{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
