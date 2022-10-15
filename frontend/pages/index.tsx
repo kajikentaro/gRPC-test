@@ -1,20 +1,21 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { GreeterClient } from "../grpc_out/GrpcServiceClientPb";
-import { HelloRequest } from "../grpc_out/grpc_pb";
+import { DBWriterClient } from "../grpc_out/GrpcServiceClientPb";
+import { User } from "../grpc_out/grpc_pb";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
   const handleClick = async () => {
-    const client = new GreeterClient("http://localhost:8080")
-    const query = new HelloRequest()
-    query.setName("Sato Taro")
-    client.sayHello(query,null, (err, response)=>{
-      if(err){
-        console.error(err)
-      }else{
-        console.log(response)
+    const client = new DBWriterClient("http://localhost:8080");
+    const query = new User();
+    query.setName("Sato Taro");
+    query.setEmail("hoge@fjewiofjoiewa.com");
+    client.createNewUser(query, null, (err, response) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(response);
       }
     });
   };

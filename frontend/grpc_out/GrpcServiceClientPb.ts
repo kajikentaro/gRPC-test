@@ -1,5 +1,5 @@
 /**
- * @fileoverview gRPC-Web generated client stub for helloworld
+ * @fileoverview gRPC-Web generated client stub for gRPC_test
  * @enhanceable
  * @public
  */
@@ -20,7 +20,7 @@ import * as grpcWeb from 'grpc-web';
 import * as grpc_pb from './grpc_pb';
 
 
-export class GreeterClient {
+export class DBWriterClient {
   client_: grpcWeb.AbstractClientBase;
   hostname_: string;
   credentials_: null | { [index: string]: string; };
@@ -39,90 +39,133 @@ export class GreeterClient {
     this.options_ = options;
   }
 
-  methodDescriptorSayHello = new grpcWeb.MethodDescriptor(
-    '/helloworld.Greeter/SayHello',
+  methodDescriptorCreateNewUser = new grpcWeb.MethodDescriptor(
+    '/gRPC_test.DBWriter/CreateNewUser',
     grpcWeb.MethodType.UNARY,
-    grpc_pb.HelloRequest,
-    grpc_pb.HelloReply,
-    (request: grpc_pb.HelloRequest) => {
+    grpc_pb.User,
+    grpc_pb.User,
+    (request: grpc_pb.User) => {
       return request.serializeBinary();
     },
-    grpc_pb.HelloReply.deserializeBinary
+    grpc_pb.User.deserializeBinary
   );
 
-  sayHello(
-    request: grpc_pb.HelloRequest,
-    metadata: grpcWeb.Metadata | null): Promise<grpc_pb.HelloReply>;
+  createNewUser(
+    request: grpc_pb.User,
+    metadata: grpcWeb.Metadata | null): Promise<grpc_pb.User>;
 
-  sayHello(
-    request: grpc_pb.HelloRequest,
+  createNewUser(
+    request: grpc_pb.User,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.RpcError,
-               response: grpc_pb.HelloReply) => void): grpcWeb.ClientReadableStream<grpc_pb.HelloReply>;
+               response: grpc_pb.User) => void): grpcWeb.ClientReadableStream<grpc_pb.User>;
 
-  sayHello(
-    request: grpc_pb.HelloRequest,
+  createNewUser(
+    request: grpc_pb.User,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.RpcError,
-               response: grpc_pb.HelloReply) => void) {
+               response: grpc_pb.User) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
-          '/helloworld.Greeter/SayHello',
+          '/gRPC_test.DBWriter/CreateNewUser',
         request,
         metadata || {},
-        this.methodDescriptorSayHello,
+        this.methodDescriptorCreateNewUser,
         callback);
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/helloworld.Greeter/SayHello',
+      '/gRPC_test.DBWriter/CreateNewUser',
     request,
     metadata || {},
-    this.methodDescriptorSayHello);
+    this.methodDescriptorCreateNewUser);
   }
 
-  methodDescriptorSayHelloAgain = new grpcWeb.MethodDescriptor(
-    '/helloworld.Greeter/SayHelloAgain',
+  methodDescriptorWriteDB = new grpcWeb.MethodDescriptor(
+    '/gRPC_test.DBWriter/WriteDB',
     grpcWeb.MethodType.UNARY,
-    grpc_pb.HelloRequest,
-    grpc_pb.HelloReply,
-    (request: grpc_pb.HelloRequest) => {
+    grpc_pb.Data,
+    grpc_pb.Data,
+    (request: grpc_pb.Data) => {
       return request.serializeBinary();
     },
-    grpc_pb.HelloReply.deserializeBinary
+    grpc_pb.Data.deserializeBinary
   );
 
-  sayHelloAgain(
-    request: grpc_pb.HelloRequest,
-    metadata: grpcWeb.Metadata | null): Promise<grpc_pb.HelloReply>;
+  writeDB(
+    request: grpc_pb.Data,
+    metadata: grpcWeb.Metadata | null): Promise<grpc_pb.Data>;
 
-  sayHelloAgain(
-    request: grpc_pb.HelloRequest,
+  writeDB(
+    request: grpc_pb.Data,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.RpcError,
-               response: grpc_pb.HelloReply) => void): grpcWeb.ClientReadableStream<grpc_pb.HelloReply>;
+               response: grpc_pb.Data) => void): grpcWeb.ClientReadableStream<grpc_pb.Data>;
 
-  sayHelloAgain(
-    request: grpc_pb.HelloRequest,
+  writeDB(
+    request: grpc_pb.Data,
     metadata: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.RpcError,
-               response: grpc_pb.HelloReply) => void) {
+               response: grpc_pb.Data) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
-          '/helloworld.Greeter/SayHelloAgain',
+          '/gRPC_test.DBWriter/WriteDB',
         request,
         metadata || {},
-        this.methodDescriptorSayHelloAgain,
+        this.methodDescriptorWriteDB,
         callback);
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/helloworld.Greeter/SayHelloAgain',
+      '/gRPC_test.DBWriter/WriteDB',
     request,
     metadata || {},
-    this.methodDescriptorSayHelloAgain);
+    this.methodDescriptorWriteDB);
+  }
+
+  methodDescriptorReadDB = new grpcWeb.MethodDescriptor(
+    '/gRPC_test.DBWriter/ReadDB',
+    grpcWeb.MethodType.UNARY,
+    grpc_pb.User,
+    grpc_pb.DataList,
+    (request: grpc_pb.User) => {
+      return request.serializeBinary();
+    },
+    grpc_pb.DataList.deserializeBinary
+  );
+
+  readDB(
+    request: grpc_pb.User,
+    metadata: grpcWeb.Metadata | null): Promise<grpc_pb.DataList>;
+
+  readDB(
+    request: grpc_pb.User,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.RpcError,
+               response: grpc_pb.DataList) => void): grpcWeb.ClientReadableStream<grpc_pb.DataList>;
+
+  readDB(
+    request: grpc_pb.User,
+    metadata: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.RpcError,
+               response: grpc_pb.DataList) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/gRPC_test.DBWriter/ReadDB',
+        request,
+        metadata || {},
+        this.methodDescriptorReadDB,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/gRPC_test.DBWriter/ReadDB',
+    request,
+    metadata || {},
+    this.methodDescriptorReadDB);
   }
 
 }
